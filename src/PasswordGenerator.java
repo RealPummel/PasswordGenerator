@@ -48,7 +48,7 @@ public class PasswordGenerator {
 
         String password = generator.generator(length, choiceLow, choiceUp, choiceNum, choiceChar);
 
-        System.out.println("Your password: " + password);
+        System.out.println("Your password: " + '\n' + password);
 
         scanner.close();
     }
