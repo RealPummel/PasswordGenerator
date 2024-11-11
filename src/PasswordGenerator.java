@@ -11,62 +11,87 @@ public class PasswordGenerator {
                                                                                                  \s""");
         System.out.println("    |----------------------------------------------------------------------|");
         System.out.println("    |                   Welcome to the Password Generator!                 |");
-        System.out.println("    |       Follow the upcoming instructions to generate a password.       |");
+        System.out.println("    |     Follow the upcoming instructions to generate a password or       |");
+        System.out.println("    |                           check its strength.                        |");
         System.out.println("    |----------------------------------------------------------------------|");
         System.out.println();
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("In the following you can choose which elements your password should contain.");
-        System.out.println("Type 'y' for yes and 'n' for no.");
-        System.out.println();
-        System.out.println("Do you want to use lowercase letters? (y/n)");
-        String choiceLow = getValidInput(scanner);
-        System.out.println();
-        System.out.println("Do you want to use uppercase letters? (y/n)");
-        String choiceUp = getValidInput(scanner);
-        System.out.println();
-        System.out.println("Do you want to use numbers? (y/n)");
-        String choiceNum = getValidInput(scanner);
-        System.out.println();
-        System.out.println("Do you want to use special characters? (y/n)");
-        String choiceChar = getValidInput(scanner);
-        System.out.println();
+        boolean runAgain = true;
 
-        String stringLength;
-        int length = 0;
+        while (runAgain) {
+            System.out.println("To generate a password type 'gen'. To check the strength of a password type 'check'. To exit type 'exit'.");
+            String choice = scanner.next().toLowerCase();
 
-        do {
-            System.out.println("What length should your password be?");
-            stringLength = scanner.next();
+            if (choice.equals("exit")) {
+                scanner.close();
+                runAgain = false;
+                continue;
+            }
+
             try {
-                length = Integer.parseInt(stringLength);
-            } catch (NumberFormatException e) {
-                System.out.println("That's not a valid length.");
+                if (choice.equals("check")) {
+                    System.out.println("Please enter the password you want to check.");
+                    String password = scanner.next();
+                    PasswordStrength passwordStrength = new PasswordStrength();
+                    System.out.println(passwordStrength.check(password));
+                    continue;
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter 'generate', 'check' or 'exit'.");
+                continue;
             }
 
-            if (length <= 0) {
-                System.out.println("Your password cant be equal or smaller than 0.");
-            }
-        } while (length <= 0);
+            System.out.println("In the following you can choose which elements your password should contain.");
+            System.out.println("Type 'y' for yes and 'n' for no.");
+            System.out.println();
+            System.out.println("Do you want to use lowercase letters? (y/n)");
+            String choiceLow = getValidInput(scanner);
+            System.out.println();
+            System.out.println("Do you want to use uppercase letters? (y/n)");
+            String choiceUp = getValidInput(scanner);
+            System.out.println();
+            System.out.println("Do you want to use numbers? (y/n)");
+            String choiceNum = getValidInput(scanner);
+            System.out.println();
+            System.out.println("Do you want to use special characters? (y/n)");
+            String choiceChar = getValidInput(scanner);
+            System.out.println();
 
-        if (choiceLow.equals("n") && choiceUp.equals("n") && choiceNum.equals("n") && choiceChar.equals("n")) {
-            System.out.println("No elements no password. Sorry :(");
-            System.exit(0);
+            String stringLength;
+            int length = 0;
+
+            do {
+                System.out.println("What length should your password be?");
+                stringLength = scanner.next();
+                try {
+                    length = Integer.parseInt(stringLength);
+                } catch (NumberFormatException e) {
+                    System.out.println("That's not a valid length.");
+                }
+
+                if (length <= 0) {
+                    System.out.println("Your password cant be equal or smaller than 0.");
+                }
+            } while (length <= 0);
+
+            if (choiceLow.equals("n") && choiceUp.equals("n") && choiceNum.equals("n") && choiceChar.equals("n")) {
+                System.out.println("No elements no password. Sorry :(");
+                continue;
+            }
+
+            Generator generator = new Generator();
+
+            String choiceRegen;
+            do {
+                String password = generator.generator(length, choiceLow, choiceUp, choiceNum, choiceChar);
+                System.out.println("Your password: " + '\n' + password + '\n');
+                System.out.println("Do you want to regenerate the password? (y/n)" + '\n');
+                choiceRegen = getValidInput(scanner);
+
+            } while (choiceRegen.equals("y"));
         }
-
-        Generator generator = new Generator();
-
-        String choiceRegen;
-        do {
-            String password = generator.generator(length, choiceLow, choiceUp, choiceNum, choiceChar);
-            System.out.println("Your password: " + '\n' + password + '\n');
-            System.out.println("Do you want to regenerate the password? (y/n)" + '\n');
-            choiceRegen = getValidInput(scanner);
-
-        } while (choiceRegen.equals("y"));
-
-        scanner.close();
     }
 
     private static String getValidInput(Scanner scanner) {
@@ -84,11 +109,3 @@ public class PasswordGenerator {
         return !input.equals("y") && !input.equals("n");
     }
 }
-//     _______   ____  ____  ___      ___  ___      ___   _______  ___
-//    |   __ "\ (" _|  |_ " ||"  \    /"  ||"  \    /"  | /"     "||"  |
-//    (. |__) :)|   (  ) : | \   \  //   | \   \  //   |(: ______)||  |
-//    |:  ____/ (:  |  | . ) /\\  \/.    | /\\  \/.    | \/    |  |:  |
-//    (|  /      \\ \__/ // |: \.        ||: \.        | // ___)_  \  |___
-//   /|__/ \     /\\ __ //\ |.  \    /:  ||.  \    /:  |(:      "|( \_|:  \
-//  (_______)   (__________)|___|\__/|___||___|\__/|___| \_______) \_______)
-//
